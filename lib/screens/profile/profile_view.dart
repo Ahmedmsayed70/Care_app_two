@@ -6,8 +6,10 @@ import 'package:care_app_two/helper/styles.dart';
 import 'package:care_app_two/screens/start_screen/start.dart';
 import 'package:care_app_two/screens/widgets/custom_divider.dart';
 import 'package:care_app_two/screens/widgets/custom_profile_rec.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key, this.ontap});
@@ -180,6 +182,14 @@ class ProfileView extends StatelessWidget {
                           ),
                         );
                       },
+                      child: GestureDetector(
+                      onTap: () async {
+                        GoogleSignIn googleSignIn = GoogleSignIn();
+                        googleSignIn.disconnect();
+                        // Logout logic (clear user data, etc.)
+                        await FirebaseAuth.instance.signOut();
+                        Navigator.of(context).pushNamedAndRemoveUntil("SIGNIN", (Route) => false);
+     },
                       child: ProfileRec(
                           icon: Icons.logout, icontext: 'Log-Out', endtext: ''),
                     ),

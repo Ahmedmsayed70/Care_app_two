@@ -3,6 +3,7 @@
 
 // ignore_for_file: prefer_const_constructors
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:care_app_two/helper/constant.dart';
 import 'package:care_app_two/helper/styles.dart';
 import 'package:care_app_two/screens/chat_bot_page/chatbot_view.dart';
@@ -14,6 +15,7 @@ import 'package:care_app_two/screens/widgets/Custom_line.dart';
 //import 'package:care_app_two/screens/widgets/custom_background.dart';
 import 'package:care_app_two/screens/widgets/custom_button.dart';
 import 'package:care_app_two/screens/widgets/custom_text_feild.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,15 +23,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 //import 'package:graduation_project/widgets/custom_logo.dart';
 
 class SigninTwo extends StatelessWidget {
-  const SigninTwo({super.key});
+  final TextEditingController email = TextEditingController();
+
+  SigninTwo({super.key}); // Declare the controller
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(kBackground), fit: BoxFit.fill),
+          image:
+              DecorationImage(image: AssetImage(kBackground), fit: BoxFit.fill),
         ),
         child: ListView(
           children: [
@@ -38,7 +42,7 @@ class SigninTwo extends StatelessWidget {
               children: [
                 //const CustomBackground(image: kBackgroundSigninTwo),
 
-               // const CustomLogo(),
+                // const CustomLogo(),
 
                 Padding(
                   padding:
@@ -53,17 +57,20 @@ class SigninTwo extends StatelessWidget {
                       ),
                       Text("Trouble logging in?",
                           textAlign: TextAlign.center,
-                          style: Styles.Style20.copyWith(color: Color(0xff000000))),
+                          style: Styles.Style20.copyWith(
+                              color: Color(0xff000000))),
                       SizedBox(
                         height: 10.h,
                       ),
                       Text(
                         'Enter your email and we\'ll send you',
-                        style: Styles.Style14.copyWith(color: Color(0xff000000)),
+                        style:
+                            Styles.Style14.copyWith(color: Color(0xff000000)),
                       ),
                       Text(
                         ' a link to reset your password.',
-                        style: Styles.Style14.copyWith(color: Color(0xff000000)),
+                        style:
+                            Styles.Style14.copyWith(color: Color(0xff000000)),
                       ),
                       SizedBox(
                         height: 15.h,
@@ -74,31 +81,63 @@ class SigninTwo extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Email',
-                            style: Styles.Style14.copyWith(color: Color(0xff000000)),
+                            style: Styles.Style14.copyWith(
+                                color: Color(0xff000000)),
                           ),
                         ),
                       ),
                       SizedBox(
                         height: 10.h,
                       ),
-                      const CustomTextField(
-                        backgroundColor: Color(0xffD4D6EE),
-                      ),
+                      TextField(controller: email),
                       const SizedBox(
                         height: 30,
                       ),
-                       CustomButton(
-                        onTap: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const ChatBotView();
-                                },
-                              ),
-                            );
-                        },
+                      CustomButton(
+                        onTap: () async {},
                         nextIcon: false,
                         text: 'Send Login link',
+                        onPressed: () async {
+                          if (email.text == "") {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.error,
+                              animType: AnimType.rightSlide,
+                              title: 'Error',
+                              desc: 'Please Enter Your Email.',
+                              btnCancelOnPress: () {},
+                              btnOkOnPress: () {},
+                            )..show();
+                            return;
+                          }
+                          try {
+                            await FirebaseAuth.instance
+                                .sendPasswordResetEmail(email: email.text);
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.success,
+                              animType: AnimType.rightSlide,
+                              title: 'Error',
+                              desc:
+                                  'A message was sent to the email to return password.',
+                              btnCancelOnPress: () {},
+                              btnOkOnPress: () {},
+                            )..show();
+                            Navigator.of(context)
+                                .pushReplacementNamed("Homepage");
+                          } catch (e) {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.error,
+                              animType: AnimType.rightSlide,
+                              title: 'Error',
+                              desc:
+                                  'Please make sure that email was correct and try again.',
+                              btnCancelOnPress: () {},
+                              btnOkOnPress: () {},
+                            )..show();
+                          }
+                        },
                       ),
                       SizedBox(
                         height: 12.h,
@@ -106,7 +145,8 @@ class SigninTwo extends StatelessWidget {
                       Center(
                           child: Text(
                         'Can’t reset your password?',
-                        style: Styles.Style11.copyWith(color: Color(0xff000000)),
+                        style:
+                            Styles.Style11.copyWith(color: Color(0xff000000)),
                       )),
                       SizedBox(
                         height: 15.h,
@@ -163,7 +203,8 @@ class SigninTwo extends StatelessWidget {
                           },
                           child: Text(
                             'Back to Sign in',
-                            style: Styles.Style13.copyWith(color: Color(0xff000000)),
+                            style: Styles.Style13.copyWith(
+                                color: Color(0xff000000)),
                           ),
                         ),
                       ),

@@ -7,7 +7,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton(
-      {super.key, this.text, this.onTap, required this.nextIcon});
+      {super.key,
+      this.text,
+      this.onTap,
+      required this.nextIcon,
+      required Future<Null> Function() onPressed});
   final String? text;
   final bool nextIcon;
   final void Function()? onTap;

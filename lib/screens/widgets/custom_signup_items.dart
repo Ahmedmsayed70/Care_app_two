@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:care_app_two/helper/constant.dart';
 import 'package:care_app_two/helper/styles.dart';
 import 'package:care_app_two/screens/signin/sign_in.dart';
@@ -7,8 +8,11 @@ import 'package:care_app_two/screens/widgets/custom_button.dart';
 import 'package:care_app_two/screens/widgets/custom_logo.dart';
 import 'package:care_app_two/screens/widgets/custom_text_feild.dart';
 import 'package:care_app_two/screens/widgets/signup_with_google.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class CustomSignupItems extends StatefulWidget {
   const CustomSignupItems({super.key});
@@ -18,6 +22,12 @@ class CustomSignupItems extends StatefulWidget {
 }
 
 class _CustomSignupItemsState extends State<CustomSignupItems> {
+  TextEditingController username = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+
   Color color = Colors.grey;
   bool value = false;
   @override
@@ -52,7 +62,18 @@ class _CustomSignupItemsState extends State<CustomSignupItems> {
             ).r,
             child: Text("Username", style: Styles.Style16),
           ),
-          SizedBox(width: 350.w, height: 52.h, child: const CustomTextField()),
+          SizedBox(
+            width: 350.w,
+            height: 52.h,
+            child: TextFormField(
+              validator: (val) {
+                if (val == "") {
+                  return "Can't be Empty";
+                }
+                return null;
+              },
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(
               left: 28,
@@ -61,7 +82,20 @@ class _CustomSignupItemsState extends State<CustomSignupItems> {
             ).r,
             child: Text("Email", style: Styles.Style14),
           ),
-          SizedBox(width: 350.w, height: 52.h, child: const CustomTextField()),
+          SizedBox(
+            width:
+                MediaQuery.of(context).size.width * 0.85, // 85% of screen width
+            height: 52.0,
+            child: TextFormField(
+              controller: email,
+              validator: (val) {
+                if (val == "") {
+                  return "Can't be Empty";
+                }
+                return null;
+              },
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(
               left: 28,
@@ -71,11 +105,20 @@ class _CustomSignupItemsState extends State<CustomSignupItems> {
             child: Text("Password", style: Styles.Style14),
           ),
           SizedBox(
-              width: 350.w,
-              height: 52.h,
-              child: const CustomTextField(
-                obscureText: true,
-              )),
+            width:
+                350.0, // Fixed width (consider using MediaQuery for responsiveness)
+            height: 52.0, // Fixed height
+            child: TextFormField(
+              controller: password,
+              obscureText: true,
+              validator: (val) {
+                if (val == "") {
+                  return "Password can't be empty";
+                }
+                return null;
+              },
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 10).r,
             child: Row(
@@ -91,10 +134,9 @@ class _CustomSignupItemsState extends State<CustomSignupItems> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                               border: Border.all(color: Colors.grey),
+                              border: Border.all(color: Colors.grey),
                               shape: BoxShape.circle,
-                              color: !value ? Colors.white : Colors.blue
-                              ),
+                              color: !value ? Colors.white : Colors.blue),
                           child: Padding(
                             padding: const EdgeInsets.all(2.0).r,
                             child: value
@@ -155,7 +197,7 @@ class _CustomSignupItemsState extends State<CustomSignupItems> {
                               fontWeight: FontWeight.w800),
                           children: <TextSpan>[
                             TextSpan(
-                                text: 'Privacy  Policy',
+                                text: 'Privacy Policy',
                                 style: Styles.Style11.copyWith(
                                     color:
                                         const Color(0xff0062D6).withOpacity(.8),
@@ -179,6 +221,45 @@ class _CustomSignupItemsState extends State<CustomSignupItems> {
               );
             },
             text: "Next",
+            onPressed: () async {
+              if (formState.currentState!.validate()) {
+                try {
+                  final credential = await FirebaseAuth.instance
+                      .createUserWithEmailAndPassword(
+                    email: email.text,
+                    password: password.text,
+                  );
+                  FirebaseAuth.instance.currentUser!.sendEmailVerification();
+                  Navigator.of(context).pushReplacementNamed("Homepage");
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'weak-password') {
+                    print('The password provided is too weak.');
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.error,
+                      animType: AnimType.rightSlide,
+                      title: 'Error',
+                      desc: 'The password provided is too weak..',
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () {},
+                    )..show();
+                  } else if (e.code == 'email-already-in-use') {
+                    print('The account already exists for that email.');
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.error,
+                      animType: AnimType.rightSlide,
+                      title: 'Error',
+                      desc: 'The account already exists for that email.',
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () {},
+                    )..show();
+                  }
+                } catch (e) {
+                  print(e);
+                }
+              }
+            },
           ),
           Padding(
             padding: const EdgeInsets.only(top: 16, bottom: 20).r,

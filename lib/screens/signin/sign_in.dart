@@ -12,9 +12,13 @@ import 'package:care_app_two/screens/widgets/Custom_line.dart';
 import 'package:care_app_two/screens/widgets/custom_button.dart';
 import 'package:care_app_two/screens/widgets/custom_text_feild.dart';
 import 'package:care_app_two/screens/widgets/signin_with_google.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 //import 'package:care_app_two/screens/widgets/signup_with_google.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 //import 'package:flutter/widgets.dart';
 
@@ -26,8 +30,34 @@ class SIGNIN extends StatefulWidget {
 }
 
 class _SIGNINState extends State<SIGNIN> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+
+  Future signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    if (googleUser == null) {
+      return;
+    }
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
   Color color = Colors.grey;
-  bool value=false;
+  bool value = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +65,8 @@ class _SIGNINState extends State<SIGNIN> {
       extendBodyBehindAppBar: true,
       body: Container(
         decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(kBackground), fit: BoxFit.fill),
+          image:
+              DecorationImage(image: AssetImage(kBackground), fit: BoxFit.fill),
         ),
         child: Align(
           alignment: Alignment.topCenter,
@@ -48,7 +78,7 @@ class _SIGNINState extends State<SIGNIN> {
                 /*SizedBox(
                   height: 8,
                 ),*/
-                
+
                 // CustomLogo(),
                 Center(
                   child: Text('SIGN IN',
@@ -74,6 +104,13 @@ class _SIGNINState extends State<SIGNIN> {
                       ),
                       CustomTextField(
                         backgroundColor: Color(0xffb7cfff),
+                        controller: email,
+                        validator: (val) {
+                          if (val == "") {
+                            return "Email can't be empty";
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(
                         height: 30.h,
@@ -88,25 +125,36 @@ class _SIGNINState extends State<SIGNIN> {
                       SizedBox(
                         height: 10.h,
                       ),
-                      CustomTextField(),
+                      CustomTextField(
+                        controller: password,
+                        obscureText:
+                            true, // Assuming this is for password input
+                        validator: (val) {
+                          if (val == "") {
+                            return "Password can't be empty";
+                          }
+                          return null;
+                        },
+                        // Add backgroundColor property here if desired, e.g.,
+                        backgroundColor: Color(0xffb7cfff),
+                      ),
                       SizedBox(
                         height: 10.h,
                       ),
                       Row(
                         children: [
-                          Checkbox(value: value,
-                   
-                    checkColor: Colors.white,
-      activeColor: Color(0xff0075FE),
-       tristate: true,
-      shape: CircleBorder(),
-                     onChanged: (newValue) {setState(() {value=newValue?? false;
-                       
-                     });
-                     
-                     }
-                     )
-                     
+                          Checkbox(
+                              value: value,
+                              checkColor: Colors.white,
+                              activeColor: Color(0xff0075FE),
+                              tristate: true,
+                              shape: CircleBorder(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  value = newValue ?? false;
+                                });
+                              })
+
                           // IconButton(
                           //   onPressed: () {
                           //     color = Colors.blue;
@@ -118,7 +166,8 @@ class _SIGNINState extends State<SIGNIN> {
                           //     size: 24,
                           //   ),
                           // ),
-                          ,Text(
+                          ,
+                          Text(
                             'Remember me',
                             style: Styles.Style13,
                           ),
@@ -139,6 +188,53 @@ class _SIGNINState extends State<SIGNIN> {
                           );
                         },
                         text: 'Sign In',
+                        onPressed: () async {
+                          try {
+                            final credential = await FirebaseAuth.instance
+                                .signInWithEmailAndPassword(
+                                    email: email.text, password: password.text);
+                            if (credential.user!.emailVerified) {
+                              FirebaseAuth.instance.currentUser!
+                                  .sendEmailVerification();
+                              Navigator.of(context)
+                                  .pushReplacementNamed("Homepage");
+                            } else {
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.error,
+                                animType: AnimType.rightSlide,
+                                title: 'Error',
+                                desc: 'Please Verified Your Email.',
+                                btnCancelOnPress: () {},
+                                btnOkOnPress: () {},
+                              )..show();
+                            }
+                          } on FirebaseAuthException catch (e) {
+                            if (e.code == 'user-not-found') {
+                              print('No user found for that email.');
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.error,
+                                animType: AnimType.rightSlide,
+                                title: 'Error',
+                                desc: 'No user found for that email.',
+                                btnCancelOnPress: () {},
+                                btnOkOnPress: () {},
+                              )..show();
+                            } else if (e.code == 'wrong-password') {
+                              print('Wrong password provided for that user.');
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.error,
+                                animType: AnimType.rightSlide,
+                                title: 'Error',
+                                desc: 'Wrong password provided for that user.',
+                                btnCancelOnPress: () {},
+                                btnOkOnPress: () {},
+                              )..show();
+                            }
+                          }
+                        },
                       ),
                       SizedBox(
                         height: 9.h,
@@ -149,7 +245,7 @@ class _SIGNINState extends State<SIGNIN> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return const SigninTwo();
+                                  return SigninTwo();
                                 },
                               ),
                             );
@@ -172,6 +268,12 @@ class _SIGNINState extends State<SIGNIN> {
                       ),
                       SignWithGoogle(
                         text: "Sign In with Google",
+                        onPressed: () async {
+                          signInWithGoogle();
+                          // Handle successful Google sign-in (e.g., navigate to homepage)
+                          Navigator.of(context)
+                              .pushReplacementNamed("Homepage");
+                        },
                       ),
                       SizedBox(
                         height: 10.h,

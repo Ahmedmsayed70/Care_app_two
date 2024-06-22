@@ -8,14 +8,15 @@ class CustomTextField extends StatelessWidget {
       {super.key,
       this.onChanged,
       this.hintText,
-      
       this.backgroundColor,
-      this.obscureText = false});
+      this.obscureText = false,
+      required TextEditingController controller,
+      required String? Function(dynamic val) validator});
   final String? hintText;
   final bool? obscureText;
   final Function(String)? onChanged;
   final Color? backgroundColor;
-  
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -29,7 +30,6 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
-        
         hintText: hintText,
         hintStyle: Styles.Style14,
         enabledBorder: OutlineInputBorder(

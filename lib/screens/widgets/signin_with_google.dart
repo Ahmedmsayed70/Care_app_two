@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignWithGoogle extends StatelessWidget {
   // ignore: use_key_in_widget_constructors
-  const SignWithGoogle({this.text});
+  const SignWithGoogle({this.text, required Future<Null> Function() onPressed});
   final String? text;
   @override
   Widget build(BuildContext context) {
@@ -26,8 +26,8 @@ class SignWithGoogle extends StatelessWidget {
           children: [
             Image.asset(
               kGoogleImage,
-              width: MediaQuery.of(context).size.width*0.1,
-              height: MediaQuery.of(context).size.width*0.1,
+              width: MediaQuery.of(context).size.width * 0.1,
+              height: MediaQuery.of(context).size.width * 0.1,
             ),
             SizedBox(
               width: 10.w,

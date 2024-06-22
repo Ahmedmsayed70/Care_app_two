@@ -1,5 +1,3 @@
-
-
 // ignore_for_file: deprecated_member_use
 
 import 'package:care_app_two/helper/constant.dart';
@@ -48,10 +46,8 @@ class CalendarTwoState extends State<CalendarTwo> {
         // ' ${DateFormat.MMMEd().format(args.value.endDate ?? args.value.startDate)}';
       } else if (args.value is DateTime) {
         _range = ' ${DateFormat.MMMEd().format(args.value)} ';
-        
       } else if (args.value is List<DateTime>) {
-      } else {
-      }
+      } else {}
     });
   }
 
@@ -97,7 +93,8 @@ class CalendarTwoState extends State<CalendarTwo> {
                         // Text('Selected date count: $_dateCount'),
                         Padding(
                           padding:
-                              const EdgeInsets.only(top: 8, left: 22, right: 11).r,
+                              const EdgeInsets.only(top: 8, left: 22, right: 11)
+                                  .r,
                           child: Text(
                             _range,
                             style: TextStyle(
@@ -110,8 +107,6 @@ class CalendarTwoState extends State<CalendarTwo> {
 
                         //  Text('Selected ranges count: $_rangeCount')
                         SfDateRangePicker(
-                          
-                          
                           //showTodayButton: true,
                           monthCellStyle: DateRangePickerMonthCellStyle(
                               textStyle: TextStyle(
@@ -133,7 +128,8 @@ class CalendarTwoState extends State<CalendarTwo> {
                           showActionButtons: false,
                           showNavigationArrow: true,
                           headerStyle: DateRangePickerHeaderStyle(
-                              backgroundColor: const Color(0xffF6F6F6).withOpacity(0),
+                              backgroundColor:
+                                  const Color(0xffF6F6F6).withOpacity(0),
                               textStyle: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.w700,
@@ -145,7 +141,8 @@ class CalendarTwoState extends State<CalendarTwo> {
                           // endRangeSelectionColor: const Color(0xff0075FE),
                           // startRangeSelectionColor: const Color(0xff0075FE),
                           todayHighlightColor: const Color(0xff0075FE),
-                          backgroundColor: const Color(0xffF6F6F6).withOpacity(1),
+                          backgroundColor:
+                              const Color(0xffF6F6F6).withOpacity(1),
                           onSelectionChanged: _onSelectionChanged,
                           selectionMode: DateRangePickerSelectionMode.single,
                           initialSelectedRange: PickerDateRange(
@@ -155,8 +152,7 @@ class CalendarTwoState extends State<CalendarTwo> {
                       ],
                     ),
                   ),
-                  
-                  
+
                   Padding(
                     padding: const EdgeInsets.only(top: 350).r,
                     child: const Column(
@@ -173,13 +169,11 @@ class CalendarTwoState extends State<CalendarTwo> {
                             ))
                       ],
                     ),
-                  )
-                
-               ,
-               
-              // TableCalendar(focusedDay: DateTime.now(),
-              
-              // firstDay: DateTime.now(), lastDay: DateTime.now().add(Duration(days: 365*5)))
+                  ),
+
+                  // TableCalendar(focusedDay: DateTime.now(),
+
+                  // firstDay: DateTime.now(), lastDay: DateTime.now().add(Duration(days: 365*5)))
                 ],
               ),
             ),
@@ -189,14 +183,14 @@ class CalendarTwoState extends State<CalendarTwo> {
                 alignment: Alignment.bottomRight,
                 onPressed: () async {
                   await showTime(context);
-               
-                 // await showDate(context);
-                 // await showDateRange(context);
+
+                  // await showDate(context);
+                  // await showDateRange(context);
                 },
                 icon: CircleAvatar(
                   radius: 26.r,
                   backgroundColor: const Color(0xff0075FE),
-                  child:const Icon(
+                  child: const Icon(
                     Icons.add,
                     size: 30,
                     color: Colors.white,
@@ -214,41 +208,34 @@ class CalendarTwoState extends State<CalendarTwo> {
     final resultRange = await showDateRangePicker(
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
-            
-            hintColor: const Color(0xff0075FE),
-            //Divider color
+            data: Theme.of(context).copyWith(
+              hintColor: const Color(0xff0075FE),
+              //Divider color
               dividerColor: Colors.grey,
               //Non selected days of the month color
               textTheme: const TextTheme(
-             
-                button: TextStyle(color: Color(0xff0075FE)),
-                bodyText2:
-                    TextStyle(color: Colors.black),
-            ),
-            colorScheme:const ColorScheme.light(
-             
-             primary:Color(0xff0075FE) , // header background color
-              onPrimary: Colors.white, // header text color
-           
-             secondary:Color(0xff9FCBFF),
-             
-              onSurface: Color(0xff1F1F1F), // body text color
-            //surface:Colors.white ,
-            
-            
-            
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: const Color(0xff0075FE),
-                textStyle: const TextStyle(color: Color(0xff0075FE)) // button text color
+                labelLarge: TextStyle(color: Color(0xff0075FE)),
+                bodyMedium: TextStyle(color: Colors.black),
+              ),
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xff0075FE), // header background color
+                onPrimary: Colors.white, // header text color
+
+                secondary: Color(0xff9FCBFF),
+
+                onSurface: Color(0xff1F1F1F), // body text color
+                //surface:Colors.white ,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xff0075FE),
+                    textStyle: const TextStyle(
+                        color: Color(0xff0075FE)) // button text color
+                    ),
               ),
             ),
-          ),
-          child: child!);
+            child: child!);
       },
-      
       barrierColor: const Color(0xff0075FE),
       helpText: 'Depart - Return dates',
       context: context,
@@ -268,27 +255,22 @@ class CalendarTwoState extends State<CalendarTwo> {
     final result = await showDatePicker(
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme:const ColorScheme.light(
-              
-             
-             primary:Color(0xff0075FE) , // header background color
-              onPrimary: Color(0xff1D1B20), // header text color
-              onSurface: Color(0xff1F1F1F), // body text color
-            surface:Colors.white ,
-            
-            
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: const Color(0xff0075FE), 
-                textStyle: const TextStyle(color:Color(0xff0075FE) )// button text color
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xff0075FE), // header background color
+                onPrimary: Color(0xff1D1B20), // header text color
+                onSurface: Color(0xff1F1F1F), // body text color
+                surface: Colors.white,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xff0075FE),
+                    textStyle: const TextStyle(
+                        color: Color(0xff0075FE)) // button text color
+                    ),
               ),
             ),
-            
-          ),
-          
-          child: child!);
+            child: child!);
       },
       context: context,
       firstDate: DateTime(1950),
@@ -308,26 +290,25 @@ class CalendarTwoState extends State<CalendarTwo> {
     final resultTime = await showTimePicker(
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              
-             secondary: const Color(0xffFFC87A),
-             primary:const Color(0xff0075FE).withOpacity(0.289), // header background color
-              onPrimary: const Color(0xff21005D), // header text color
-              onSurface: const Color(0xff1F1F1F), // body text color
-            //surface:Colors.white ,
-           // onSecondary: Color(0xffDAEBFF)
-            //tertiary: Color(0xffDAEBFF)
-            // onTertiary: Color(0xffDAEBFF)
-            inversePrimary: Colors.blue
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: const Color(0xff0075FE), // button text color
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                  secondary: const Color(0xffFFC87A),
+                  primary: const Color(0xff0075FE)
+                      .withOpacity(0.289), // header background color
+                  onPrimary: const Color(0xff21005D), // header text color
+                  onSurface: const Color(0xff1F1F1F), // body text color
+                  //surface:Colors.white ,
+                  // onSecondary: Color(0xffDAEBFF)
+                  //tertiary: Color(0xffDAEBFF)
+                  // onTertiary: Color(0xffDAEBFF)
+                  inversePrimary: Colors.blue),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xff0075FE), // button text color
+                ),
               ),
             ),
-          ),
-          child: child!);
+            child: child!);
       },
       context: context,
       initialTime: timeOfDay,

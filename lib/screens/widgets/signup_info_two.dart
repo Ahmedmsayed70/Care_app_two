@@ -6,11 +6,58 @@ import 'package:care_app_two/screens/widgets/custom_dropdown_dateofbirth.dart';
 import 'package:care_app_two/screens/widgets/custom_dropdown_list.dart';
 import 'package:care_app_two/screens/widgets/custom_logo.dart';
 import 'package:care_app_two/screens/widgets/custom_radio_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignupInfoTwo extends StatelessWidget {
-  const SignupInfoTwo({super.key});
+  final String name; // Add a name field
+  final DateTime dateOfBirth;
+  final String gender;
+  final double height;
+  final double weight;
+  final String disease;
+  final DateTime dateOfIllness;
+
+  const SignupInfoTwo({
+    super.key,
+    required this.name, // Make name required
+    required this.dateOfBirth,
+    required this.gender,
+    required this.height,
+    required this.weight,
+    required this.disease,
+    required this.dateOfIllness,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'dateOfBirth': dateOfBirth.toIso8601String(), // You might need to convert DateTime to a format suitable for Firestore
+      'gender': gender,
+      'height': height,
+      'weight': weight,
+      'disease': disease,
+      'dateOfIllness': dateOfIllness.toIso8601String(), // You might need to convert DateTime to a format suitable for Firestore
+    };
+  }
+}
+
+  Future<void> addUser(User user) async {
+  // Ensure Firebase is initialized before using Firestore
+  await Firebase.initializeApp();
+
+  final CollectionReference users = FirebaseFirestore.instance.collection('users');
+  try {
+    await users.add(user.toMap());
+    print("User Added");
+  } catch (error) {
+    // Handle the error more robustly (e.g., throw exception or show user-friendly message)
+    print("Failed to add user: $error");
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +218,7 @@ class SignupInfoTwo extends StatelessWidget {
                   return const SIGNIN();
                 }));
               },
+              onPressed: () {},
             ),
             SizedBox(
               height: 27.h,

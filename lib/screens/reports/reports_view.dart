@@ -24,7 +24,9 @@ class ReportsView extends StatefulWidget {
 }
 
 class _ReportsViewState extends State<ReportsView> {
+  // ignore: unused_field
   String _range = '';
+  // ignore: unused_element
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     /// The argument value will return the changed date as [DateTime] when the
     /// widget [SfDateRangeSelectionMode] set as single.
@@ -46,10 +48,8 @@ class _ReportsViewState extends State<ReportsView> {
         // ' ${DateFormat.MMMEd().format(args.value.endDate ?? args.value.startDate)}';
       } else if (args.value is DateTime) {
         _range = ' ${DateFormat.MMMEd().format(args.value)} ';
-        
       } else if (args.value is List<DateTime>) {
-      } else {
-      }
+      } else {}
     });
   }
 
@@ -59,7 +59,7 @@ class _ReportsViewState extends State<ReportsView> {
   /// called whenever a selection changed on the date picker widget.
 
   List<double> weeklySummary = [25, 60, 79, 50, 59, 80, 100, 90, 90, 55, 40];
- DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -122,8 +122,7 @@ class _ReportsViewState extends State<ReportsView> {
                               ),
                             ],
                           ),
-
-                           SizedBox(
+                          SizedBox(
                             width: 8.w,
                           ),
                           Container(
@@ -134,8 +133,7 @@ class _ReportsViewState extends State<ReportsView> {
                                 borderRadius: BorderRadius.circular(12).r,
                                 color: Color(0xfffdfdff)),
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10).r,
+                              padding: const EdgeInsets.only(left: 10).r,
                               child: Row(
                                 children: [
                                   Icon(
@@ -145,27 +143,28 @@ class _ReportsViewState extends State<ReportsView> {
                                   SizedBox(
                                     width: 8.w,
                                   ),
-                                  Text("${DateFormat.yMMMM().format(selectedDate.toLocal())}".toString(),
-                                  style: TextStyle(color: Colors.black,
-                                  fontSize: 13.sp,
-fontWeight: FontWeight.w900,
-                                  ),),
-                                  
-             ElevatedButton(
-              style: ButtonStyle(
-                iconSize: MaterialStatePropertyAll(0),
-                //fixedSize:MaterialStatePropertyAll(MediaQuery.of(context).size),
-                elevation: MaterialStatePropertyAll(0),
-                backgroundColor: MaterialStatePropertyAll(Colors.transparent)
-              ),
-              onPressed: () => _selectDate(context),
-              child: Image.asset('assets/images/Vector 12.png'),
-            ),
-            
-                                  
-                                  
-                                 
-                                  
+                                  Text(
+                                    // ignore: unnecessary_string_interpolations
+                                    "${DateFormat.yMMMM().format(selectedDate.toLocal())}"
+                                        .toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                        iconSize: MaterialStatePropertyAll(0),
+                                        //fixedSize:MaterialStatePropertyAll(MediaQuery.of(context).size),
+                                        elevation: MaterialStatePropertyAll(0),
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                Colors.transparent)),
+                                    onPressed: () => _selectDate(context),
+                                    child: Image.asset(
+                                        'assets/images/Vector 12.png'),
+                                  ),
                                 ],
                               ),
                             ),
@@ -324,7 +323,7 @@ fontWeight: FontWeight.w900,
   }
 
   Future<void> showDate(BuildContext context) async {
-   // dateTime = DateFormat.yMMMM().format(DateTime.now());
+    // dateTime = DateFormat.yMMMM().format(DateTime.now());
     final result = await showDatePicker(
       builder: (context, child) {
         return Theme(
@@ -354,9 +353,8 @@ fontWeight: FontWeight.w900,
     );
     if (result != null) {
       setState() {
-       // dateTime = DateFormat.yMMMM().format(result);
+        // dateTime = DateFormat.yMMMM().format(result);
       }
     }
-    
   }
 }
